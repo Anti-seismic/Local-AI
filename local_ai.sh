@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =========================================================================
-# Local_AI.sh
+# local_ai.sh
 # Create the structure
 # Install dependencies
 # Build or clean then rebuild the "Qwen3.5-2B-AWQ-4bit" virtual environment
