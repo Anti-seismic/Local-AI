@@ -1,0 +1,70 @@
+{
+    "id": "Qwen3.5-2B-AWQ-4bit",
+    "name": "Qwen 3.5 2B AWQ 4-bit",
+    "path": "/home/ai-broker/LocalAI/models/Qwen3.5-2B-AWQ-4bit",
+    "quantization": "4bit",
+    "type": "chat",
+    "params_b": 2,
+    "vram_gb": 2.5,
+    "max_model_len": 68000,
+    "max_num_batched_tokens": 4096,
+    "gpu_memory_utilization": 0.98,
+    "description": "Qwen 3.5 2B AWQ 4-bit community quantisation. Fully multimodal: text, image, video. Supports native tool calls and chain-of-thought reasoning.",
+    "license": "Apache 2.0",
+    "capabilities": [
+        "chat",
+        "tool_calls",
+        "reasoning",
+        "code",
+        "vision",
+        "image",
+        "video"
+    ],
+    "tool_call_parser": "qwen3_coder",
+    "reasoning_parser": "qwen3",
+    "enable_auto_tool_choice": true,
+    "host": "127.0.0.1",
+    "port": 8000,
+    "allowed_origins": [
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
+        "*"
+    ],
+    "environment": {
+        "vllm_build": "0.19.1rc1.dev41+g56de443db.d20260413.cu132",
+        "vllm_cuda": "13.0",
+        "torch_cuda": "12.9",
+        "driver_version": "580.126.20",
+        "cuda_driver_version": "13.0",
+        "compute_capability": "sm_120",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU 8GB",
+        "paddleocr_version": "3.4.0",
+        "vllm_venv": "virtual_Env/Qwen3.5-2B-AWQ-4bit",
+        "ui_venv": "virtual_Env/ProjectUI",
+        "notes": [
+            "vLLM cu132 and torch cu128 coexist via CUDA driver backward-compatible ABI",
+            "PaddleOCR removed — image/document understanding handled by native vision",
+            "quantization=compressed-tensors auto-detected by vLLM; also set explicitly via --quantization",
+            "gpu_memory_utilization=0.98 is the empirical hard ceiling for RTX 5060 8GB. Do NOT raise to 1.0 — causes OOM (7.4/7.53 GiB free vs 7.53 GiB required). VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS must NOT be set; it reduces effective utilization to 0.9395 and shrinks KV cache from 68,000 to 61,472 tokens.",
+            "block_size = 544 tokens — set by vLLM's mamba page alignment logic (interface.py), NOT by max_model_len. All KV cache sizes are exact multiples of 544: 68,544 = 126 × 544 (max_model_len=9216), 68,000 = 125 × 544 (max_model_len≥~65000). The 1-block (544-token) loss at large max_model_len is caused by vLLM allocating a larger dummy batch during KV cache profiling, consuming slightly more VRAM and leaving 1 fewer block.",
+            "max_model_len auto-calibration: vllm_launcher.py reads the actual KV cache from vllm_api.log and computes optimal = (kv_cache_tokens // block_size) * block_size = kv_cache_tokens (already block-aligned). This creates a stable fixed point: once max_model_len == kv_cache_tokens, the same VRAM profiling overhead produces the same kv_cache_tokens on the next boot → no further updates. The floor is 65536. The calibrated value is written back to this JSON automatically.",
+            "resource_tracker: 1 leaked semaphore at shutdown — vLLM-internal multiprocessing cleanup artefact, not actionable from application code. Expected and harmless.",
+            "Overriding num_gpu_blocks=0 with num_gpu_blocks_override=512 — vLLM internal calibration step, not an error."
+        ],
+        "vllm_build_wheel": "0.19.2rc1.dev7+g38907e439",
+        "vllm_build_compiled": "0.19.2rc1.dev14+gf150107ef",
+        "torchaudio": "2.11.0+cu130",
+        "torchvision": "0.26.0+cu130",
+        "torch_c_dlpack_ext": "0.1.5",
+        "torch_build": "2.11.0+cu130"
+    },
+    "limit_mm_per_prompt": {
+        "image": 1,
+        "video": 1
+    },
+    "vllm_quantization": "compressed-tensors",
+    "vision_encoder_budget": 16384,
+    "vision_token_budget": 4096,
+    "max_output_tokens": 2048,
+    "min_output_tokens": 256
+}
