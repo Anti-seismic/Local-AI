@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LocalAI
+Comment=Launch LocalAI Agent
+Exec=bash /home/ai-broker/LocalAI/run_ai.sh
+Icon=/home/ai-broker/LocalAI/LocalAI_icon_256.png
+Terminal=true
+Categories=Utility;AI;
+StartupNotify=false
