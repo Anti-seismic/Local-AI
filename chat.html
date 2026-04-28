@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalAI Agent</title>
+    <!-- marked.js pinned to v4.3.0: stable API, supports marked.use(), gfm default true -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+    <div id="container">
+
+        <!-- ── Sidebar ──────────────────────────────────────────────── -->
+        <div id="sidebar">
+            <h3>Conversations</h3>
+            <ul id="threads"></ul>
+            <button id="newThread">＋ New Conversation</button>
+
+            <hr>
+
+            <div class="sidebar-section">
+                <label class="sidebar-label">Model</label>
+                <select id="model"></select>
+                <div id="modelInfo"></div>
+            </div>
+
+            <hr>
+
+            <!-- Tool selection panel -->
+            <div class="sidebar-section">
+                <label class="sidebar-label">Tools</label>
+
+                <div class="tool-mode-row">
+                    <label class="tool-mode-label">
+                        <input type="checkbox" id="toolAutoMode" checked>
+                        <span>🤖 Auto — AI selects tools freely</span>
+                    </label>
+                </div>
+
+                <div id="toolList" class="tool-list tool-list-disabled">
+                    <!-- Tool checkboxes injected by app.js -->
+                </div>
+                <div id="toolStatus" class="tool-status"></div>
+            </div>
+
+            <hr>
+
+            <div class="sidebar-section">
+                <label class="thinking-row">
+                    <input type="checkbox" id="thinkingMode">
+                    <span>Thinking Mode</span>
+                </label>
+                <div id="thinkingStatus" class="thinking-status off">✅ Thinking OFF</div>
+            </div>
+
+            <hr>
+
+            <button id="theme">🌓 Toggle Theme</button>
+            <div id="status">Backend: checking…</div>
+
+            <hr>
+
+            <button id="restartBackend">🔄 Restart Backend</button>
+            <button id="shutdownBackend">⏹️ Shutdown Backend</button>
+        </div>
+
+        <!-- ── Chat area ─────────────────────────────────────────────── -->
+        <div id="chat">
+
+            <!-- Attachment bar -->
+            <div id="attachmentBar">
+                <button id="uploadBtn">📎 Attach File</button>
+                <div id="attachedFiles"></div>
+            </div>
+
+            <!-- Message feed -->
+            <div id="messages"></div>
+
+            <!-- Input row -->
+            <div id="inputRow">
+                <textarea id="prompt" rows="3"
+                    placeholder="Type your message… (Ctrl+Enter to send)"></textarea>
+                <button id="send">Send ▶</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" multiple style="display:none" accept="*/*">
+
+    <script src="app.js"></script>
+</body>
+</html>
