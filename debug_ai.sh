@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# debug_ai.sh — Local AI kill, clean, and status tool
+# debug_ai.sh
+# Local AI kill, clean, and status tool
 #
 # Usage:
 #   ./debug_ai.sh           full kill + clean + status report
