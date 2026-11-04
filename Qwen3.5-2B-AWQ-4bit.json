@@ -1,0 +1,73 @@
+{
+    "id": "Qwen3.5-2B-AWQ-4bit",
+    "name": "Qwen 3.5 2B AWQ 4-bit",
+    "path": "/home/ai-broker/LocalAI/models/Qwen3.5-2B-AWQ-4bit",
+    "quantization": "4bit",
+    "type": "chat",
+    "params_b": 2,
+    "max_model_len": 251328,
+    "max_num_batched_tokens": null,
+    "gpu_memory_utilization": 0.98,
+    "description": "Qwen 3.5 2B AWQ 4-bit community quantisation. Fully multimodal: text, image, video. Supports native tool calls and chain-of-thought reasoning.",
+    "license": "Apache 2.0",
+    "capabilities": [
+        "chat",
+        "tool_calls",
+        "reasoning",
+        "code",
+        "vision",
+        "image",
+        "video"
+    ],
+    "tool_call_parser": "qwen3_coder",
+    "reasoning_parser": "qwen3",
+    "enable_auto_tool_choice": true,
+    "host": "127.0.0.1",
+    "port": 8000,
+    "allowed_origins": [
+        "http://127.0.0.1:8080",
+        "http://localhost:8080"
+    ],
+    "environment": {
+        "vllm_version": "0.21.1rc1.dev111+ga78b842d0",
+        "torch_version": "2.11.0+cu130",
+        "torch_cuda": "13.0",
+        "compute_capability": "sm_120",
+        "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "gpu_vram_mb": 8151,
+        "driver_version": "595.71.05",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        "notes": [
+            "[tag:first-boot-template] Auto-generated template on first boot. Update params_b, description, license, and capabilities to match the actual model.",
+            "[tag:gpu-util-safe-default] gpu_memory_utilization starts at 0.90 (safe conservative default). Raise toward 0.95–0.98 only after confirming the model loads without OOM on this hardware. Never set to 1.0 — vLLM requires headroom for CUDA graph capture.",
+            "[tag:pytorch-cuda-alloc-conf] PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True is set in the vLLM subprocess environment by vllm_launcher.py. This prevents CUDA allocator fragmentation OOM when the unquantised vision encoder processes large image batches in successive calls. The model weights may be quantised (e.g. AWQ 4-bit) but vision encoder projection layers typically run in fp16 and are not quantised. Without expandable_segments, reserved-but-fragmented VRAM cannot be reused, causing torch.OutOfMemoryError mid-stream. Safe on all hardware — no overhead when fragmentation is absent.",
+            "[tag:max-model-len-calibration] max_model_len is auto-calibrated by vllm_launcher.py after the first successful start. The launcher reads the actual KV cache token count from vllm_api.log and writes the optimal value back to this JSON. The formula creates a stable fixed point: once max_model_len equals the KV cache token count, the same VRAM profiling overhead reproduces the same KV cache on the next boot — no further updates occur. Floor is 65536.",
+            "[tag:mamba-block-size] block_size is set by vLLM's mamba page-alignment logic (interface.py), NOT by max_model_len. For Qwen3.x mamba-hybrid models this is typically 544 tokens. All KV cache sizes are exact multiples of block_size. The 1-block loss at large max_model_len is caused by vLLM allocating a larger dummy batch during KV cache profiling, consuming slightly more VRAM and leaving 1 fewer block — expected.",
+            "[tag:awq-compressed-tensors] AWQ quantisation: set vllm_quantization to 'compressed-tensors'. vLLM auto-detects this from the model's config.json, but being explicit prevents unexpected fallback if the config changes. The display field 'quantization' (e.g. '4bit') is separate from 'vllm_quantization' which is the vLLM backend identifier.",
+            "[tag:leaked-semaphore-shutdown] resource_tracker: 1 leaked semaphore at shutdown — vLLM-internal multiprocessing cleanup artefact, not actionable from application code. Expected and harmless.",
+            "[tag:num-gpu-blocks-override] Overriding num_gpu_blocks=0 with num_gpu_blocks_override=512 in vLLM logs — internal calibration step, not an error.",
+            "[tag:triton-jit-text] Triton JIT kernels for text inference (_zero_kv_blocks_kernel, _compute_slot_mapping_kernel, _causal_conv1d_fwd_kernel, _fused_post_conv_kernel) are compiled on the first inference of each session (~1-2 s latency spike on the very first request only). Cached to ~/.cache/vllm/torch_compile_cache. The 'consider extending warmup' suggestion in the vLLM log is informational — no action needed.",
+            "[tag:gpu-util-small-vram] Small VRAM GPU detected (<16 GB). Keep gpu_memory_utilization ≤ 0.98 and monitor KV cache size after calibration. If max_model_len calibrates below 32768, consider a smaller quantisation (e.g. 4-bit instead of 8-bit) or a smaller model.",
+            "[tag:vllm-021-cuda-graph-profiling] CUDA graph memory profiling is ON by default since vLLM 0.21. gpu_memory_utilization=0.98 is equivalent to ~0.948 effective utilisation with profiling enabled. Set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0 to disable (reverts to pre-0.21 behaviour). Do NOT do this — profiling gives accurate VRAM accounting.",
+            "[tag:blackwell-sm120] Blackwell GPU (RTX 5xxx / B100+ / sm_100+) detected. vLLM cu132 and torch cu128 coexist via CUDA driver backward-compatible ABI — this is expected and not an error. FP4 (NVFP4) quantisation is natively supported on Blackwell; vllm_quantization 'compressed-tensors' with 4-bit weights is the current recommended path until native fp4 kernels ship in vLLM stable.",
+            "[tag:vision-encoder-unquantised] Vision encoder warning: even when model weights are quantised (e.g. AWQ 4-bit), the vision encoder projection layers typically run in fp16 (unquantised). Peak VRAM usage during large image batches can therefore exceed what the quantised-weights baseline suggests. Monitor VRAM with nvidia-smi during multi-image requests.",
+            "[tag:vision-limit-mm-per-prompt] limit_mm_per_prompt.image is auto-derived as min(30, vision_encoder_budget // 256). Set 'image' to a non-null integer to override. On small-VRAM GPUs, reducing this limit lowers peak VRAM during multi-page document analysis.",
+            "[tag:vision-triton-jit] Triton JIT kernels for vision (_bilinear_pos_embed_kernel and others) are compiled on the first vision call of each session. This causes a ~1-2 s latency spike on the very first image/document request only. Compiled kernels are cached to ~/.cache/vllm/torch_compile_cache and are cache hits on all subsequent sessions.",
+            "[tag:reasoning-parser-thinking-budget] Chain-of-thought reasoning is enabled via reasoning_parser. Thinking tokens consume output budget: with safe_max=16384, a long reasoning trace can exhaust the budget before the visible answer is written. If responses truncate, increase max_output_tokens in this JSON or reduce thinking depth in the UI.",
+            "[tag:qwen-reasoning-parser] Qwen3 reasoning parser: use 'qwen3' for reasoning_parser and 'qwen3_coder' for tool_call_parser. These are the correct vLLM parser identifiers for Qwen3.x models. Do not use 'qwen2' — it does not handle Qwen3 thinking tokens correctly.",
+            "[tag:tool-calls-enable-auto] enable_auto_tool_choice: true passes --enable-auto-tool-choice to vLLM, allowing the model to invoke tools freely without an explicit tool_choice='auto' in every request. Required for agent loop operation. Set to false for pure chat deployments where tool calls are undesired."
+        ]
+    },
+    "limit_mm_per_prompt": {
+        "image": null,
+        "image_auto": 30,
+        "image_note": "auto = min(30, vision_encoder_budget=16384 // 256) = 30. Set 'image' to a non-null integer to override.",
+        "video": 1
+    },
+    "vllm_quantization": "compressed-tensors",
+    "vision_encoder_budget": 16384,
+    "model_weights_vram_gb": 2.5,
+    "max_num_batched_tokens_auto": null,
+    "max_num_batched_tokens_note": "auto = min(max_model_len, 8192). Set max_num_batched_tokens to override.",
+    "vision_token_budget": 4096
+}
